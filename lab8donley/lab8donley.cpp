@@ -13,8 +13,8 @@ To remove the invalid iCCP chunk from all of the PNG files in a folder (director
 int main(int argc, char** argv) {
 
 	const float FPS = 60;
-	const int SCREEN_W = 640;
-	const int SCREEN_H = 480;
+	const int SCREEN_W = 900;
+	const int SCREEN_H = 800;
 	const int duck_SIZE = 32;
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
@@ -30,6 +30,8 @@ int main(int argc, char** argv) {
 	if (!al_init()) {
 		return -1;
 	}
+	al_install_keyboard();
+	
 
 	timer = al_create_timer(1.0 / FPS);
 	if (!timer) {
@@ -45,8 +47,14 @@ int main(int argc, char** argv) {
 
 
 	al_init_image_addon();
-	image = al_load_bitmap("cool.png");
-	duck = al_load_bitmap("duck.png");
+	image = al_load_bitmap("screenshot.png");
+	int shotW = al_get_bitmap_width(image);
+	int shotH = al_get_bitmap_height(image);
+
+	
+	//image.setScale(-1.0f, 1.0f)
+	duck = al_load_bitmap("kirby0.png");
+	//ALLEGRO_BITMAP* duck = al_create_sub_bitmap(ducks, 150, 0, 220, 210);
 	al_convert_mask_to_alpha(duck, al_map_rgb(255, 0, 255));
 	event_queue = al_create_event_queue();
 	if (!event_queue) {
@@ -55,7 +63,7 @@ int main(int argc, char** argv) {
 		al_destroy_timer(timer);
 		return -1;
 	}
-
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -70,8 +78,18 @@ int main(int argc, char** argv) {
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
-		if (ev.type == ALLEGRO_EVENT_TIMER) {
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+			if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE) {
+				duck_x = duck_x;
+				duck_y = duck_y;
+				break;
+			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_UP) {
+				break;
+			}
+		}
+		
+		else if (ev.type == ALLEGRO_EVENT_TIMER) {
 			if (duck_x < 0 || duck_x > SCREEN_W - duck_SIZE) {
 				duck_dx = -duck_dx;
 			}
@@ -85,6 +103,7 @@ int main(int argc, char** argv) {
 
 			redraw = true;
 		}
+		
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
 		}
@@ -93,7 +112,8 @@ int main(int argc, char** argv) {
 			redraw = false;
 
 			al_clear_to_color(al_map_rgb(0, 0, 0));
-			al_draw_bitmap(image, 0, 0, 0);
+			//al_draw_bitmap(image, 0, 0, 0);
+			al_draw_scaled_bitmap(image, 0, 0, shotW, shotH, 0, 0, SCREEN_W, SCREEN_H, 0);
 			al_draw_bitmap(duck, duck_x, duck_y, 0);
 
 			al_flip_display();
