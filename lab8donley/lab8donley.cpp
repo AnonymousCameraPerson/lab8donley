@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_TIMER* timer = NULL;
-
+	bool dontmove = false;
 	float duck_x = SCREEN_W / 2.0 - duck_SIZE / 2.0;
 	float duck_y = SCREEN_H / 2.0 - duck_SIZE / 2.0;
 	float duck_dx = -4.0, duck_dy = 4.0;
@@ -83,41 +83,48 @@ int main(int argc, char** argv) {
 		al_wait_for_event(event_queue, &ev);
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
 			if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE) {
-				duck_x = duck_x;
-				duck_y = duck_y;
-				break;
+				//duck_x = duck_x;
+				//duck_y = duck_y;
+				dontmove = true;
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
-				cout << "Pressed left key";
+				//cout << "Pressed left key";
 				flag = ALLEGRO_FLIP_HORIZONTAL;
 				
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_DOWN) {
-				cout << "Pressed down key";
+				//cout << "Pressed down key";
 				flag = 3;
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_UP) {
-				cout << "Pressed up key";
+				//cout << "Pressed up key";
 				flag = 4;
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
-				cout << "Pressed right key";
+				//cout << "Pressed right key";
 				flag = 0;
 			}
 		}
 		
 		else if (ev.type == ALLEGRO_EVENT_TIMER) {
-			if (duck_x < 0 || duck_x > SCREEN_W - duck_SIZE) {
-				duck_dx = -duck_dx;
+			int angle = 0;
+			if (dontmove) {
+				duck_x = duck_x;
+				duck_y = duck_y;
 			}
+			else {
+				if (duck_x < 0 || duck_x > SCREEN_W - duck_SIZE) {
+					//if (duck_dx == 0 && angle<3)
+					duck_dx = -duck_dx;
+				}
 
-			if (duck_y < 0 || duck_y > SCREEN_H - duck_SIZE) {
-				duck_dy = -duck_dy;
+				if (duck_y < 0 || duck_y > SCREEN_H - duck_SIZE) {
+					duck_dy = -duck_dy;
+				}
+
+				duck_x += duck_dx;
+				duck_y += duck_dy;
 			}
-
-			duck_x += duck_dx;
-			duck_y += duck_dy;
-
 			redraw = true;
 		}
 		
