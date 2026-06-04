@@ -9,6 +9,8 @@ To remove the invalid iCCP chunk from all of the PNG files in a folder (director
 
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_image.h>
+#include <iostream>
+using namespace std;
 
 int main(int argc, char** argv) {
 
@@ -16,6 +18,7 @@ int main(int argc, char** argv) {
 	const int SCREEN_W = 900;
 	const int SCREEN_H = 800;
 	const int duck_SIZE = 32;
+	int flag = 0;
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_TIMER* timer = NULL;
@@ -84,8 +87,22 @@ int main(int argc, char** argv) {
 				duck_y = duck_y;
 				break;
 			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
+				cout << "Pressed left key";
+				flag = ALLEGRO_FLIP_HORIZONTAL;
+				
+			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_DOWN) {
+				cout << "Pressed down key";
+				flag = 3;
+			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_UP) {
-				break;
+				cout << "Pressed up key";
+				flag = 4;
+			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+				cout << "Pressed right key";
+				flag = 0;
 			}
 		}
 		
@@ -114,7 +131,16 @@ int main(int argc, char** argv) {
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			//al_draw_bitmap(image, 0, 0, 0);
 			al_draw_scaled_bitmap(image, 0, 0, shotW, shotH, 0, 0, SCREEN_W, SCREEN_H, 0);
-			al_draw_bitmap(duck, duck_x, duck_y, 0);
+			if (flag == 4) {
+				al_draw_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 3*ALLEGRO_PI/2, 0);
+			}
+			else if (flag == 3) {
+				al_draw_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, ALLEGRO_PI/2, 0);
+			}
+			else {
+				al_draw_bitmap(duck, duck_x, duck_y, flag);
+			}
+			
 
 			al_flip_display();
 		}
