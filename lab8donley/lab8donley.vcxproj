@@ -164,6 +164,7 @@
     <Image Include="..\..\..\..\OneDrive\Pictures\rubberduck.png" />
     <Image Include="..\..\..\..\OneDrive\Pictures\screenshot.png" />
     <Image Include="kirby0.png" />
+    <Image Include="x64\Debug\fish.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

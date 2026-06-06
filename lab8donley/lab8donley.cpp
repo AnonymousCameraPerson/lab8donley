@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
 	ALLEGRO_TIMER* timer = NULL;
 	bool dontmove = false;
 	bool currentlyturning = false;
+	float turned = 0.0;
 	float duck_x = SCREEN_W / 2.0 - duck_SIZE / 2.0;
 	float duck_y = SCREEN_H / 2.0 - duck_SIZE / 2.0;
 	float duck_dx = -4.0, duck_dy = 4.0;
@@ -57,9 +58,9 @@ int main(int argc, char** argv) {
 	int shotW = al_get_bitmap_width(image);
 	int shotH = al_get_bitmap_height(image);
 
-	
 	//image.setScale(-1.0f, 1.0f)
-	duck = al_load_bitmap("kirby0.png");
+	duck = al_load_bitmap("fish.png");
+	al_convert_mask_to_alpha(duck, al_map_rgb(255, 255, 255));
 	//ALLEGRO_BITMAP* duck = al_create_sub_bitmap(ducks, 150, 0, 220, 210);
 	al_convert_mask_to_alpha(duck, al_map_rgb(255, 0, 255));
 	event_queue = al_create_event_queue();
@@ -95,6 +96,10 @@ int main(int argc, char** argv) {
 				flag = ALLEGRO_FLIP_HORIZONTAL;
 				
 			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+				//cout << "Pressed right key";
+				flag = ALLEGRO_FLIP_HORIZONTAL;
+			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_DOWN) {
 				//cout << "Pressed down key";
 				flag = 3;
@@ -103,10 +108,7 @@ int main(int argc, char** argv) {
 				//cout << "Pressed up key";
 				flag = 4;
 			}
-			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
-				//cout << "Pressed right key";
-				flag = 0;
-			}
+			
 		}
 		
 		else if (ev.type == ALLEGRO_EVENT_TIMER) {
@@ -127,29 +129,64 @@ int main(int argc, char** argv) {
 				//}
 				if (currentlyturning) {
 					myangle += .1;
-					if (myangle >= angle) {
+					turned += .1;
+					if (turned >= ALLEGRO_PI) {
+						float var1 = turned - ALLEGRO_PI;
+						myangle -= var1;
+						currentlyturning = false;
+						turned = 0.0;
+						while (myangle >= 2 * ALLEGRO_PI) {
+							myangle -= 2 * ALLEGRO_PI;
+						}
+						while (myangle < 0) {
+							myangle += 2 * ALLEGRO_PI;
+						}
+					}
+					/*
+					if (myangle > angle) {
 						myangle = angle;
 						currentlyturning = false;
 
-						if (myangle >= 0) {
+						if (myangle >= 2*ALLEGRO_PI) {
 							myangle -= .1;
 						}
 					}
+					*/
 
 				}
-				if (duck_x < 0 || duck_x > SCREEN_W - duck_SIZE) {
+				if (duck_x < 80 || duck_x > SCREEN_W - shotW/5) {
 					angle = myangle + ALLEGRO_PI;
 					currentlyturning = true;
 					duck_dx = -duck_dx;
 				}
 
-				if (duck_y < 0 || duck_y > SCREEN_H - duck_SIZE) {
+				if (duck_y < 0 || duck_y > SCREEN_H - duck_SIZE*3) {
 					angle = myangle + ALLEGRO_PI;
 					currentlyturning = true;
 					duck_dy = -duck_dy;
 				}	
-				duck_x += duck_dx;
-				duck_y += duck_dy;		
+				if (flag == ALLEGRO_FLIP_HORIZONTAL) {
+					duck_x -= duck_dx;
+					duck_y = duck_y;
+					
+				}
+				else if (flag == 0){
+					duck_x += duck_dx;
+					duck_y = duck_y;
+					
+				}
+				else if (flag == 4) {
+					duck_x = duck_x;
+					duck_y -= duck_dy;
+					
+				}
+				else if (flag == 3) {
+					duck_x = duck_x;
+					duck_y += duck_dy;
+					
+				}
+				//duck_x += duck_dx;
+				//duck_y += duck_dy;		
 			}
 			redraw = true;
 		}
@@ -165,17 +202,17 @@ int main(int argc, char** argv) {
 			//al_draw_bitmap(image, 0, 0, 0);
 			al_draw_scaled_bitmap(image, 0, 0, shotW, shotH, 0, 0, SCREEN_W, SCREEN_H, 0);
 			if (angle != 0) {
-				al_draw_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, myangle, 0);
+				al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y+50, 0.3, 0.3,  myangle, 0);
 			}
 			else {
 				if (flag == 4) {
-					al_draw_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 3 * ALLEGRO_PI / 2, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, 3 * ALLEGRO_PI / 2, 0);
 				}
 				else if (flag == 3) {
-					al_draw_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, ALLEGRO_PI / 2, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, ALLEGRO_PI / 2, 0);
 				}
 				else {
-					al_draw_bitmap(duck, duck_x, duck_y, flag);
+					al_draw_scaled_bitmap(duck, 0,0, shotW, shotH, duck_x, duck_y, shotW / 3, shotH / 3, flag);
 				}
 			}
 			
