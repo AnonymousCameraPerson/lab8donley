@@ -160,6 +160,7 @@
   <ItemGroup>
     <Image Include="..\..\..\..\Downloads\bubbles.png" />
     <Image Include="..\..\..\..\Downloads\GrassTileSet.png" />
+    <Image Include="..\..\..\..\Downloads\turtle.png" />
     <Image Include="..\..\..\..\OneDrive\Pictures\ducks.png" />
     <Image Include="..\..\..\..\OneDrive\Pictures\rubberduck.png" />
     <Image Include="..\..\..\..\OneDrive\Pictures\screenshot.png" />
