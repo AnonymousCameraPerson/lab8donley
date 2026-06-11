@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 	const int duck_SIZE = 32;
 	bool turningRight=false, turningLeft=true, goingUp=false, goingDown=false;
 	int flag = 0;
-	float curAngle =3.14;
+	float curAngle = 0;
 	float destAngle = 0;
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
@@ -137,80 +137,78 @@ int main(int argc, char** argv) {
 				duck_y = duck_y;
 			}
 			
-			if (duck_x <= 100 || duck_x >= SCREEN_W-100) {
-				//destAngle = curAngle - ALLEGRO_PI;
+			else if (duck_x <= 100 || duck_x >= SCREEN_W-100) {
+				destAngle += ALLEGRO_PI;
 				currentlyturning = true;
 				dontmove = true;
 				//duck_dx = -duck_dx;
 				
 			}
 
-			if (duck_y < 100 || duck_y > SCREEN_H - duck_SIZE*3) {
-				//angle = curAngle + ALLEGRO_PI;
+			else if (duck_y < 100 || duck_y > SCREEN_H - duck_SIZE*3) {
+				destAngle += ALLEGRO_PI;
 				// destAngle = 0;
 				currentlyturning = true;
 				dontmove = true;
 				//duck_dy = -duck_dy;
 			}	
 			if (currentlyturning) {
-				if (turningLeft) {
+				
+				if (curAngle <= destAngle) {
+					curAngle += 0.05f;
+
 					if (curAngle >= destAngle) {
-						//if (turningLeft) {
-						curAngle -= 0.05f;
-						//}
-
-						if (curAngle <= destAngle) {
-							curAngle = destAngle;
-							dontmove = false;
-							currentlyturning = false;
-							if (turningRight) {
-								turningRight = false;
-								turningLeft = true;
-							}
-							else if (turningLeft) {
-								turningRight = true;
-								turningLeft = false;
-							}
-							else if (goingUp) {
-								goingUp = false;
-								goingDown = true;
-							}
-							else if (goingDown) {
-								goingDown = false;
-								goingUp = true;
-							}
+						curAngle = destAngle;
+						dontmove = false;
+						currentlyturning = false;
+						if (turningRight) {
+							turningRight = false;
+							turningLeft = true;
+						}
+						else if (turningLeft) {
+							turningRight = true;
+							turningLeft = false;
+						}
+						else if (goingUp) {
+							goingUp = false;
+							goingDown = true;
+						}
+						else if (goingDown) {
+							goingDown = false;
+							goingUp = true;
 						}
 					}
 				}
-				else {
-					if (curAngle <= 3.14) {
-						//if (turningLeft) {
-						curAngle += 0.05f;
-						//}
+				//
+				//else {
+				//	if (curAngle <= 3.14) {
+				//		//if (turningLeft) {
+				//		curAngle += 0.05f;
+				//		//}
 
-						if (curAngle >= 3.14) {
-							curAngle = 3.14;
-							dontmove = false;
-							currentlyturning = false;
-							if (turningRight) {
-								turningRight = false;
-								turningLeft = true;
-							}
-							else if (turningLeft) {
-								turningRight = true;
-								turningLeft = false;
-							}
-							else if (goingUp) {
-								goingUp = false;
-								goingDown = true;
-							}
-							else if (goingDown) {
-								goingDown = false;
-								goingUp = true;
-							}
-						}
-					}
-				}
+				//		if (curAngle >= 3.14) {
+				//			curAngle = 3.14;
+				//			dontmove = false;
+				//			currentlyturning = false;
+				//			if (turningRight) {
+				//				turningRight = false;
+				//				turningLeft = true;
+				//			}
+				//			else if (turningLeft) {
+				//				turningRight = true;
+				//				turningLeft = false;
+				//			}
+				//			else if (goingUp) {
+				//				goingUp = false;
+				//				goingDown = true;
+				//			}
+				//			else if (goingDown) {
+				//				goingDown = false;
+				//				goingUp = true;
+				//			}
+				//		}
+				//	}
+				//}
 
 			}
 			
@@ -274,16 +272,16 @@ int main(int argc, char** argv) {
 			}
 			else {
 				if (goingUp) {
-					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3,ALLEGRO_PI/2, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3,curAngle, 0); //Up ALLEGRO_PI/2
 				}
 				else if (goingDown) {
-					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, ALLEGRO_PI*3/2, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, curAngle, 0); //Down ALLEGRO_PI*3/2
 				}
 				else if (turningLeft) {
-					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, ALLEGRO_PI*2, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, curAngle, 0); //Left ALLEGRO_PI*2
 				}
 				else if (turningRight) {
-					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, ALLEGRO_PI, 0);
+					al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3, curAngle, 0); //Right ALLEGRO_PI
 				}
 				//al_draw_scaled_bitmap(duck, 0, 0, shotW, shotH, duck_x, duck_y, shotW / 3, shotH / 3, ALLEGRO_FLIP_HORIZONTAL);
 			}
