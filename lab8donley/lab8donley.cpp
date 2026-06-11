@@ -95,6 +95,8 @@ int main(int argc, char** argv) {
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
 				//cout << "Pressed left key";
 				//flag = ALLEGRO_FLIP_HORIZONTAL;
+				curAngle = 0;
+				destAngle = 0;
 				turningRight = false;
 				turningLeft = true;
 				goingUp = false;
@@ -104,6 +106,9 @@ int main(int argc, char** argv) {
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
 				//cout << "Pressed right key";
 				//flag = 0;
+				//curAngle = 0;
+				curAngle = ALLEGRO_PI;
+				destAngle = ALLEGRO_PI;
 				turningRight = true;
 				turningLeft = false;
 				goingUp = false;
@@ -112,6 +117,8 @@ int main(int argc, char** argv) {
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_DOWN) {
 				//cout << "Pressed down key";
 				//flag = 3;
+				curAngle = -ALLEGRO_PI/2;
+				destAngle = -ALLEGRO_PI / 2;
 				turningRight = false;
 				turningLeft = false;
 				goingUp = false;
@@ -120,6 +127,8 @@ int main(int argc, char** argv) {
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_UP) {
 				//cout << "Pressed up key";
 				//flag = 4;
+				curAngle = ALLEGRO_PI / 2;
+				destAngle = ALLEGRO_PI / 2;
 				turningRight = false;
 				turningLeft = false;
 				goingUp = true;
@@ -268,7 +277,7 @@ int main(int argc, char** argv) {
 			//al_draw_bitmap(image, 0, 0, 0);
 			al_draw_scaled_bitmap(image, 0, 0, shotW, shotH, 0, 0, SCREEN_W, SCREEN_H, 0);
 			if (curAngle != 0 && curAngle != destAngle) {
-				al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y+50, 0.3, 0.3,  curAngle, 3);
+				al_draw_scaled_rotated_bitmap(duck, al_get_bitmap_width(duck) / 2.0, al_get_bitmap_height(duck) / 2.0, duck_x, duck_y, 0.3, 0.3,  curAngle, 0);
 			}
 			else {
 				if (goingUp) {
